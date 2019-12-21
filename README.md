@@ -10,11 +10,9 @@ $ cd /to/the/path/you/download/the/to
 
 $ docker-compose up -d
 ```
----
 
-the NGINX will run in the background with the port of ':80', if you run linux distro locally just enter 'localhost' but if you are running virtual machine enter the linux distro 'xxx.xxx.xxx.xxx:80'
+>the NGINX will run in the background with the port of ':80', if you run linux distro locally just enter 'localhost' but if you are running virtual machine enter the linux distro 'xxx.xxx.xxx.xxx:80'
 
----
 
 ## Laravel commands
  to get laravel commands to work you should use this
@@ -51,4 +49,32 @@ mysql:
       SERVICE_NAME: mysql
     networks:
       - laravel
+```
+
+## NGINX
+to change the nginx configuration in **default.conf** in **nginx/** folder 
+
+```
+server {
+    listen 80;
+    index index.php index.php;
+    server_name localhost;
+    error_log /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+    root /var/www/html/public;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.*\.php)(/.*)$;
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+}
 ```
